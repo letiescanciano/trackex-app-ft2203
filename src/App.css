@@ -1,0 +1,12 @@
+.layout{
+    display: flex;
+}
+
+body {
+    margin:0;
+    background-color: #1C2633;
+    color: white;
+    font-family: 'League Spartan', sans-serif;
+    font-size: 16px;
+    font-weight: 200;
+}
