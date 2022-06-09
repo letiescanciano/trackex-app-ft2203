@@ -1,8 +1,8 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
 
 import { Logo } from './Logo';
 import './App.css';
+import data from './data';
 
 import styled from 'styled-components';
 
@@ -44,7 +44,40 @@ const ListItem = styled.li`
     text-decoration: none;
   }
 `;
+
+const Table = styled.table`
+  width: 80%;
+  text-align: left;
+  padding: 64px;
+`;
+
+const THeadCell = styled.th`
+  padding: 16px 0;
+`;
+
+const Td = styled.td`
+  padding: 8px 0;
+`;
+
+// color: ${props => {
+//   console.log('props', props);
+//   if (props.type === 'income') {
+//     return 'green';
+//   }
+//   return 'white';
+// }};
+
+const AmountCell = styled.td`
+  padding: 8px 0;
+  color: ${props => (props.type === 'income' ? '#00E4C6' : '#FF7661')};
+`;
 function App() {
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    setTransactions(data);
+  }, []);
+
   return (
     <div className="layout">
       <SideNavBar>
@@ -69,7 +102,36 @@ function App() {
           </List>
         </nav>
       </SideNavBar>
-      <main></main>
+      <main style={{ width: '100%' }}>
+        <Table>
+          <thead>
+            <tr>
+              <THeadCell>Date</THeadCell>
+              <THeadCell>Name</THeadCell>
+              <THeadCell>Category</THeadCell>
+              <THeadCell>Amount</THeadCell>
+              <THeadCell>Type</THeadCell>
+              <THeadCell>Actions</THeadCell>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map(transaction => {
+              return (
+                <tr>
+                  <Td>{transaction.date}</Td>
+                  <Td>{transaction.name}</Td>
+                  <Td>{transaction.category}</Td>
+                  <AmountCell type={transaction.type}>
+                    {transaction.amount}
+                  </AmountCell>
+                  <Td>{transaction.type}</Td>
+                  <Td>Edit/Delete</Td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </main>
     </div>
   );
 }
