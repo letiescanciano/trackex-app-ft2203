@@ -9,7 +9,7 @@ import data from './data';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { AddTransactionDrawer } from '../Drawer';
+import { TransactionDrawer } from '../Drawer';
 
 const Table = styled.table`
   width: 80%;
@@ -30,9 +30,13 @@ const AmountCell = styled.td`
   color: ${props => (props.type === 'income' ? '#00E4C6' : '#FF7661')};
 `;
 
+// mode can be add or edit
+
 export const TransactionList = () => {
   const [transactions, setTransactions] = useState([]);
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
+  const [mode, setMode] = useState('add');
+  const [selectedTransaction, setSelectedTransaction] = useState({});
 
   useEffect(() => {
     setTransactions(data);
@@ -64,12 +68,39 @@ export const TransactionList = () => {
     setTransactions([...transactions, newTransaction]);
   };
 
+  const handleEdit = transaction => {
+    console.log('handleEdit transaction', transaction);
+    setMode('edit');
+    setIsOpenDrawer(true);
+    setSelectedTransaction(transaction);
+  };
+
+  const editTransaction = values => {
+    console.log('edit transaction', values);
+
+    // 1. Find the transaction in the transactions array. findIndex
+    const transactionIndex = transactions.findIndex(
+      transaction => transaction.id === selectedTransaction.id
+    );
+    console.log('transactionIndex', transactionIndex);
+
+    // 2. We need to make a copy of our state
+    const _transactions = [...transactions];
+    console.log('_transactions ', _transactions);
+
+    // 3. Replace the transaction that we updated
+    _transactions[transactionIndex] = values;
+    console.log('_transactions with updated element', _transactions);
+    // 4. Update our state
+    setTransactions(_transactions);
+  };
   return (
     <>
       <Button
         variant="contained"
         onClick={() => {
           console.log('onclick');
+          setMode('add');
           setIsOpenDrawer(true);
         }}
       >
@@ -98,11 +129,7 @@ export const TransactionList = () => {
                 </AmountCell>
                 <Td>{transaction.type}</Td>
                 <Td>
-                  <EditIcon
-                    onClick={() => {
-                      console.log('edit transaction', transaction.id);
-                    }}
-                  />
+                  <EditIcon onClick={() => handleEdit(transaction)} />
                   <DeleteForeverIcon
                     style={{ color: '#FF7661' }}
                     onClick={() => {
@@ -115,12 +142,15 @@ export const TransactionList = () => {
           })}
         </tbody>
       </Table>
-      <AddTransactionDrawer
+      <TransactionDrawer
         open={isOpenDrawer}
         onClose={() => {
           setIsOpenDrawer(false);
         }}
+        mode={mode}
+        selectedTransaction={selectedTransaction}
         addTransaction={addTransaction}
+        editTransaction={editTransaction}
       />
     </>
   );

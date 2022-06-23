@@ -44,7 +44,18 @@ const transactionSchema = Yup.object().shape({
   date: Yup.string().min('10').max('10').required('This is a required field'),
   amount: Yup.number().required('This is a required field'),
 });
-export const AddTransactionDrawer = ({ open, onClose, addTransaction }) => {
+export const TransactionDrawer = ({
+  open,
+  onClose,
+  addTransaction,
+  mode,
+  selectedTransaction,
+  editTransaction,
+}) => {
+  console.log('TransactionDrawer props');
+  console.log('mode', mode);
+  console.log('selectedTransaction', selectedTransaction);
+
   const categories = [
     { label: 'Eating out', value: 'eating_out' },
     {
@@ -59,6 +70,10 @@ export const AddTransactionDrawer = ({ open, onClose, addTransaction }) => {
       label: 'Groceries',
       value: 'groceries',
     },
+    {
+      label: 'Salary',
+      value: 'salary',
+    },
   ];
 
   const types = [
@@ -66,22 +81,27 @@ export const AddTransactionDrawer = ({ open, onClose, addTransaction }) => {
     { label: 'Expense', value: 'expense' },
   ];
 
+  const initialValues =
+    mode === 'add'
+      ? {
+          name: '',
+          date: '',
+          amount: 0,
+          category: 'eating_out',
+          type: 'expense',
+        }
+      : selectedTransaction;
+
   return (
     <Drawer anchor="right" open={open} onClose={onClose}>
       <FormWrapper>
-        <h1> New transaction</h1>
+        <h1> {mode === 'add' ? 'New' : 'Edit'} transaction</h1>
         <Formik
-          initialValues={{
-            name: '',
-            date: '',
-            amount: 0,
-            category: 'eating_out',
-            type: 'expense',
-          }}
+          initialValues={initialValues}
           validationSchema={transactionSchema}
           onSubmit={values => {
             console.log('formik values', values);
-            addTransaction(values);
+            mode === 'add' ? addTransaction(values) : editTransaction(values);
             onClose();
           }}
         >
@@ -128,6 +148,7 @@ export const AddTransactionDrawer = ({ open, onClose, addTransaction }) => {
                       aria-labelledby="category"
                       name="category"
                       defaultValue="eating_out"
+                      value={values.category}
                       onChange={handleChange}
                     >
                       {categories.map(category => {
@@ -148,6 +169,7 @@ export const AddTransactionDrawer = ({ open, onClose, addTransaction }) => {
                       aria-labelledby="type"
                       name="type"
                       defaultValue="expense"
+                      value={values.type}
                       onChange={handleChange}
                     >
                       {types.map(type => {
@@ -168,7 +190,7 @@ export const AddTransactionDrawer = ({ open, onClose, addTransaction }) => {
                     Cancel
                   </Button>
                   <Button type="submit" variant="contained" disabled={!isValid}>
-                    Save
+                    {mode === 'add' ? 'Create' : 'Update'}
                   </Button>
                 </ActionsWrapper>
               </Form>

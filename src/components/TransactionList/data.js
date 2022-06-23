@@ -18,7 +18,6 @@ const data = [
   {
     id: 2,
     date: '22/06/2021',
-
     name: 'April payroll',
     category: 'salary',
     amount: 4500,
