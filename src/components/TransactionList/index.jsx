@@ -3,7 +3,11 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import data from './data';
 
@@ -37,6 +41,7 @@ export const TransactionList = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [mode, setMode] = useState('add');
   const [selectedTransaction, setSelectedTransaction] = useState({});
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
     setTransactions(data);
@@ -94,6 +99,34 @@ export const TransactionList = () => {
     // 4. Update our state
     setTransactions(_transactions);
   };
+
+  const handleDelete = id => {
+    console.log('id', id);
+    console.log('transactions', transactions);
+    // we need to find the transaction that we need to delete on transactions
+
+    // we open the dialog
+    setIsDeleteDialogOpen(true);
+
+    // we set the selected transaction to the one that we want to delete.
+
+    setSelectedTransaction({ id });
+  };
+
+  const handleCloseDialog = () => {
+    setIsDeleteDialogOpen(false);
+    setSelectedTransaction({});
+  };
+
+  const deleteTransaction = () => {
+    const _transactions = transactions.filter(
+      tr => tr.id !== selectedTransaction.id
+    );
+    // console.log('del', _transactions);
+    setTransactions(_transactions);
+    handleCloseDialog();
+  };
+
   return (
     <>
       <Button
@@ -132,9 +165,7 @@ export const TransactionList = () => {
                   <EditIcon onClick={() => handleEdit(transaction)} />
                   <DeleteForeverIcon
                     style={{ color: '#FF7661' }}
-                    onClick={() => {
-                      console.log('delete transaction', transaction.id);
-                    }}
+                    onClick={() => handleDelete(transaction.id)}
                   ></DeleteForeverIcon>
                 </Td>
               </tr>
@@ -152,6 +183,20 @@ export const TransactionList = () => {
         addTransaction={addTransaction}
         editTransaction={editTransaction}
       />
+      <Dialog open={isDeleteDialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>
+          Are you sure you want to delete this transaction?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            If you delete it you won't be able to recover it.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={deleteTransaction}>Delete</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
