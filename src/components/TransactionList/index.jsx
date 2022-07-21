@@ -9,6 +9,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
+import FormControl from '@mui/material/FormControl';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
+
 import data from './data';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -34,21 +39,32 @@ const AmountCell = styled.td`
   color: ${props => (props.type === 'income' ? '#00E4C6' : '#FF7661')};
 `;
 
+const ActionsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 // mode can be add or edit
 
 export const TransactionList = () => {
   const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [mode, setMode] = useState('add');
   const [selectedTransaction, setSelectedTransaction] = useState({});
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
+  const [search, setSearch] = useState('');
+
   useEffect(() => {
     setTransactions(data);
   }, []);
 
+  useEffect(() => {
+    setFilteredTransactions(transactions);
+  }, [transactions]);
+
   const addTransaction = values => {
-    console.log('addTransactionvalues', values);
+    // console.log('addTransactionvalues', values);
     //Don't do this. We shouldn't update the state directly
     //transactions.push(values);
 
@@ -74,35 +90,35 @@ export const TransactionList = () => {
   };
 
   const handleEdit = transaction => {
-    console.log('handleEdit transaction', transaction);
+    // console.log('handleEdit transaction', transaction);
     setMode('edit');
     setIsOpenDrawer(true);
     setSelectedTransaction(transaction);
   };
 
   const editTransaction = values => {
-    console.log('edit transaction', values);
+    // console.log('edit transaction', values);
 
     // 1. Find the transaction in the transactions array. findIndex
     const transactionIndex = transactions.findIndex(
       transaction => transaction.id === selectedTransaction.id
     );
-    console.log('transactionIndex', transactionIndex);
+    // console.log('transactionIndex', transactionIndex);
 
     // 2. We need to make a copy of our state
     const _transactions = [...transactions];
-    console.log('_transactions ', _transactions);
+    // console.log('_transactions ', _transactions);
 
     // 3. Replace the transaction that we updated
     _transactions[transactionIndex] = values;
-    console.log('_transactions with updated element', _transactions);
+    // console.log('_transactions with updated element', _transactions);
     // 4. Update our state
     setTransactions(_transactions);
   };
 
   const handleDelete = id => {
-    console.log('id', id);
-    console.log('transactions', transactions);
+    // console.log('id', id);
+    // console.log('transactions', transactions);
     // we need to find the transaction that we need to delete on transactions
 
     // we open the dialog
@@ -127,18 +143,41 @@ export const TransactionList = () => {
     handleCloseDialog();
   };
 
+  useEffect(() => {
+    const _transactions = transactions.filter(transaction =>
+      transaction.name.toLowerCase().includes(search.toLowerCase())
+    );
+    console.log('_transactions', _transactions);
+    setFilteredTransactions(_transactions);
+  }, [search]);
   return (
     <>
-      <Button
-        variant="contained"
-        onClick={() => {
-          console.log('onclick');
-          setMode('add');
-          setIsOpenDrawer(true);
-        }}
-      >
-        + Add transaction
-      </Button>
+      <ActionsWrapper>
+        <FormControl variant="standard">
+          <Input
+            style={{ color: 'white' }}
+            startAdornment={
+              <InputAdornment position="start">
+                <SearchIcon style={{ color: 'white' }} />
+              </InputAdornment>
+            }
+            onChange={e => {
+              // console.log(e.target.value);
+              setSearch(e.target.value);
+            }}
+            placeholder="Search something..."
+          />
+        </FormControl>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setMode('add');
+            setIsOpenDrawer(true);
+          }}
+        >
+          + Add transaction
+        </Button>
+      </ActionsWrapper>
       <Table>
         <thead>
           <tr>
@@ -151,7 +190,7 @@ export const TransactionList = () => {
           </tr>
         </thead>
         <tbody>
-          {transactions.map(transaction => {
+          {filteredTransactions.map(transaction => {
             return (
               <tr key={transaction.id}>
                 <Td>{transaction.date}</Td>

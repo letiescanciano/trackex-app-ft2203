@@ -52,10 +52,6 @@ export const TransactionDrawer = ({
   selectedTransaction,
   editTransaction,
 }) => {
-  console.log('TransactionDrawer props');
-  console.log('mode', mode);
-  console.log('selectedTransaction', selectedTransaction);
-
   const categories = [
     { label: 'Eating out', value: 'eating_out' },
     {
@@ -100,7 +96,6 @@ export const TransactionDrawer = ({
           initialValues={initialValues}
           validationSchema={transactionSchema}
           onSubmit={values => {
-            console.log('formik values', values);
             mode === 'add' ? addTransaction(values) : editTransaction(values);
             onClose();
           }}
