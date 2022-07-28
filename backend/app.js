@@ -9,6 +9,8 @@ const adapter = new FileSync('db.json')
 const db = low(adapter)
 db._.mixin(lodashId)
 
+
+app.use(express.json())
 // GET /transactions
 app.get('/transactions', (req, res) => {
   const transactions = db.get('transactions').value()
@@ -26,4 +28,60 @@ app.get('/transactions/:id', (req, res) => {
     res.status(404).json({ message: 'Wrong id. Resource not found' })
   }
 })
+
+app.post('/transactions', (req, res) => {
+  const { name, amount, date, category, type } = req.body
+
+  const createdTransaction = db
+    .get('transactions')
+    .insert({
+      name,
+      amount,
+      date,
+      category,
+      type,
+      created_at: new Date(),
+      updated_at: new Date(),
+    })
+    .write()
+  res.status(200).json(createdTransaction)
+})
+
+app.put('/transactions/:id', (req, res) => {
+  const { id } = req.params
+  const { name, amount, date, category, type } = req.body
+
+  const updatedTransaction = db
+    .get('transactions')
+    .updateById(id, {
+      name,
+      amount,
+      date,
+      category,
+      type,
+      updated_at: new Date(),
+    })
+    .write()
+  console.log('updated transaction', updatedTransaction)
+
+  if (updatedTransaction) {
+    res.status(200).json(updatedTransaction)
+  } else {
+    res.status(400).json({ message: 'Wrong id, try again' })
+  }
+})
+
+app.delete('/transactions/:id', (req, res) => {
+  const { id } = req.params
+
+  const deletedTransaction = db.get('transactions').removeById(id).write()
+
+  console.log('deledtedTransaction', deletedTransaction)
+  if (deletedTransaction) {
+    res.status(200)
+  } else {
+    res.status(400).json({ message: 'Wrong id, try again' })
+  }
+})
+
 app.listen(3001, () => console.log('Server listening on port 3001'))

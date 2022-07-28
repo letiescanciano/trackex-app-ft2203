@@ -239,26 +239,6 @@
       "created_at": "2022-07-26T14:39:12.752Z",
       "updated_at": "2022-07-26T14:39:12.752Z",
       "id": "817b8a81-d491-4531-b257-2e6d09a5d874"
-    },
-    {
-      "name": "pr ",
-      "date": "2020-11-08",
-      "amount": 3450,
-      "category": "electronics",
-      "type": "expense",
-      "created_at": "2022-07-26T14:39:12.752Z",
-      "updated_at": "2022-07-26T14:39:12.752Z",
-      "id": "e99d5da6-50c7-4408-812c-0833e92b048d"
-    },
-    {
-      "name": "Natacion",
-      "date": "2021-06-08",
-      "amount": 333,
-      "category": "eating_out",
-      "type": "income",
-      "created_at": "2022-07-26T14:39:12.753Z",
-      "updated_at": "2022-07-26T14:39:12.753Z",
-      "id": "d871579b-5d0a-414c-8ade-438b47c935cd"
     }
   ]
 }
