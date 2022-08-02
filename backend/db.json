@@ -239,6 +239,26 @@
       "created_at": "2022-07-26T14:39:12.752Z",
       "updated_at": "2022-07-26T14:39:12.752Z",
       "id": "817b8a81-d491-4531-b257-2e6d09a5d874"
+    },
+    {
+      "name": "created from frontendº",
+      "amount": 3424,
+      "date": "2022-08-02",
+      "category": "electronics",
+      "type": "expense",
+      "created_at": "2022-08-02T14:39:32.251Z",
+      "updated_at": "2022-08-02T14:39:32.251Z",
+      "id": "1ba774f4-eadf-4aa0-88ae-b04fd421057b"
+    },
+    {
+      "name": "created from frontendº 2",
+      "amount": 1234,
+      "date": "2021-11-21",
+      "category": "groceries",
+      "type": "expense",
+      "created_at": "2022-08-02T14:43:48.878Z",
+      "updated_at": "2022-08-02T14:43:48.878Z",
+      "id": "cb79b865-4ba0-4a36-9c13-1f904c62894c"
     }
   ]
 }

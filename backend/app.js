@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-
+const cors = require('cors')
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const lodashId = require('lodash-id')
@@ -9,13 +9,23 @@ const adapter = new FileSync('db.json')
 const db = low(adapter)
 db._.mixin(lodashId)
 
-
 app.use(express.json())
+
+const corsOptions = {
+  origin: 'http://localhost:3000',
+}
+app.use(cors(corsOptions))
 // GET /transactions
 app.get('/transactions', (req, res) => {
   const transactions = db.get('transactions').value()
   //   console.log('transactions', transactions)
-  res.status(200).json(transactions)
+  res
+    .status(200)
+    .json(
+      transactions.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      )
+    )
 })
 
 app.get('/transactions/:id', (req, res) => {

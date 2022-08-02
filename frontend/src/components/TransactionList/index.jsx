@@ -13,17 +13,15 @@ import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
-
-import data from './data';
+import { transactionsAPI } from '../../services/transactions';
 
 import { v4 as uuidv4 } from 'uuid';
 
 import { TransactionDrawer } from '../Drawer';
 
 const Table = styled.table`
-  width: 80%;
   text-align: left;
-  padding: 64px;
+  padding: 32px;
 `;
 
 const THeadCell = styled.th`
@@ -56,14 +54,35 @@ export const TransactionList = () => {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    setTransactions(data);
+    const getTransactions = async () => {
+      try {
+        const { data, status } = await transactionsAPI.all();
+        if (status === 200) {
+          setTransactions(data);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getTransactions();
   }, []);
+
+  // Using then/catch
+  // transactionsAPI
+  //   .all()
+  //   .then(response => {
+  //     const { data, status } = response;
+  //     if (status === 200) {
+  //       setTransactions(data);
+  //     }
+  //   })
+  //   .catch(e => console.log(e));
 
   useEffect(() => {
     setFilteredTransactions(transactions);
   }, [transactions]);
 
-  const addTransaction = values => {
+  const addTransaction = async values => {
     // console.log('addTransactionvalues', values);
     //Don't do this. We shouldn't update the state directly
     //transactions.push(values);
@@ -78,7 +97,6 @@ export const TransactionList = () => {
 
     //Option 3
     const newTransaction = {
-      id: uuidv4(),
       name: values.name,
       date: values.date,
       amount: values.amount,
@@ -86,7 +104,17 @@ export const TransactionList = () => {
       type: values.type,
     };
 
-    setTransactions([...transactions, newTransaction]);
+    // setTransactions([...transactions, newTransaction]);
+
+    try {
+      const { data, status } = await transactionsAPI.create(newTransaction);
+
+      if (status === 200) {
+        setTransactions([...transactions, data]);
+      }
+    } catch (e) {
+      console.log('add transaction error', e);
+    }
   };
 
   const handleEdit = transaction => {
@@ -147,7 +175,6 @@ export const TransactionList = () => {
     const _transactions = transactions.filter(transaction =>
       transaction.name.toLowerCase().includes(search.toLowerCase())
     );
-    console.log('_transactions', _transactions);
     setFilteredTransactions(_transactions);
   }, [search]);
   return (
@@ -238,4 +265,4 @@ export const TransactionList = () => {
       </Dialog>
     </>
   );
-};
+};;;
