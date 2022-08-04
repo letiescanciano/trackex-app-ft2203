@@ -124,24 +124,32 @@ export const TransactionList = () => {
     setSelectedTransaction(transaction);
   };
 
-  const editTransaction = values => {
+  const editTransaction = async values => {
     // console.log('edit transaction', values);
 
-    // 1. Find the transaction in the transactions array. findIndex
-    const transactionIndex = transactions.findIndex(
-      transaction => transaction.id === selectedTransaction.id
-    );
-    // console.log('transactionIndex', transactionIndex);
+    try {
+      const { data, status } = await transactionsAPI.update(values);
 
-    // 2. We need to make a copy of our state
-    const _transactions = [...transactions];
-    // console.log('_transactions ', _transactions);
+      if (status === 200) {
+        // 1. Find the transaction in the transactions array. findIndex
+        const transactionIndex = transactions.findIndex(
+          transaction => transaction.id === selectedTransaction.id
+        );
+        // console.log('transactionIndex', transactionIndex);
 
-    // 3. Replace the transaction that we updated
-    _transactions[transactionIndex] = values;
-    // console.log('_transactions with updated element', _transactions);
-    // 4. Update our state
-    setTransactions(_transactions);
+        // 2. We need to make a copy of our state
+        const _transactions = [...transactions];
+        // console.log('_transactions ', _transactions);
+
+        // 3. Replace the transaction that we updated
+        _transactions[transactionIndex] = data;
+        // console.log('_transactions with updated element', _transactions);
+        // 4. Update our state
+        setTransactions(_transactions);
+      }
+    } catch (e) {
+      console.log('edit transaction error', e);
+    }
   };
 
   const handleDelete = id => {
@@ -162,13 +170,22 @@ export const TransactionList = () => {
     setSelectedTransaction({});
   };
 
-  const deleteTransaction = () => {
-    const _transactions = transactions.filter(
-      tr => tr.id !== selectedTransaction.id
-    );
-    // console.log('del', _transactions);
-    setTransactions(_transactions);
-    handleCloseDialog();
+  const deleteTransaction = async () => {
+    try {
+      console.log('selectedTransaction.id', selectedTransaction.id);
+      const response = await transactionsAPI.delete(selectedTransaction.id);
+      console.log('response', response);
+      if (response.status === 200) {
+        const _transactions = transactions.filter(
+          tr => tr.id !== selectedTransaction.id
+        );
+        // console.log('del', _transactions);
+        setTransactions(_transactions);
+        handleCloseDialog();
+      }
+    } catch (e) {
+      console.log('delete transaction error', e);
+    }
   };
 
   useEffect(() => {
@@ -177,6 +194,7 @@ export const TransactionList = () => {
     );
     setFilteredTransactions(_transactions);
   }, [search]);
+
   return (
     <>
       <ActionsWrapper>

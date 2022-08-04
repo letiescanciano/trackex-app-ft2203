@@ -88,7 +88,7 @@ app.delete('/transactions/:id', (req, res) => {
 
   console.log('deledtedTransaction', deletedTransaction)
   if (deletedTransaction) {
-    res.status(200)
+    res.status(200).json()
   } else {
     res.status(400).json({ message: 'Wrong id, try again' })
   }
