@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { Logo } from './Logo';
+import { AuthContext } from '../../contexts/Auth';
+import { useContext } from 'react';
 
 const LogoWrapper = styled.div`
   display: flex;
@@ -32,6 +34,8 @@ const ListItem = styled.li`
   }
 `;
 export const NavBar = () => {
+  const { logout } = useContext(AuthContext);
+
   return (
     <SideNavBar>
       <LogoWrapper>
@@ -51,6 +55,9 @@ export const NavBar = () => {
           </ListItem>
           <ListItem>
             <a href="/">Settings</a>
+          </ListItem>
+          <ListItem onClick={logout} cursor="pointer">
+            Logout
           </ListItem>
         </List>
       </nav>

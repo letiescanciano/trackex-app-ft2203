@@ -7,7 +7,6 @@ import { Formik, Form } from 'formik';
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { DebugFormik } from '../../aux/DebugFormik';
 import { AuthContext } from '../../../contexts/Auth';
 
 const userSchema = Yup.object().shape({
@@ -26,10 +25,10 @@ const Logo = styled.img`
   width: 150px;
 `;
 
-export const Login = () => {
-  const { login } = useContext(AuthContext);
+export const Signup = () => {
+  const { signup } = useContext(AuthContext);
   const handleSubmit = values => {
-    login(values);
+    signup(values);
   };
   return (
     <Container>
@@ -72,12 +71,11 @@ export const Login = () => {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  disbled={!isValid || isSubmitting}
+                  disabled={!isValid || isSubmitting}
                 >
-                  Log in
+                  Create Account
                 </Button>
               </Form>
-              <DebugFormik />
             </>
           );
         }}

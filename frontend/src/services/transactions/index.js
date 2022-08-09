@@ -1,9 +1,18 @@
 import axios from 'axios';
 
+const token = localStorage.getItem('token');
+console.log('token', token);
+
+const BASE_URL = 'http://localhost:3001';
+const service = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
 export const transactionsAPI = {
-  all: () => axios.get('http://localhost:3001/transactions'),
-  create: data => axios.post('http://localhost:3001/transactions', data),
-  update: data =>
-    axios.put(`http://localhost:3001/transactions/${data.id}`, data),
-  delete: id => axios.delete(`http://localhost:3001/transactions/${id}`),
+  all: () => service.get('/transactions'),
+  create: data => service.post('/transactions', data),
+  update: data => service.put(`/transactions/${data.id}`, data),
+  delete: id => service.delete(`/transactions/${id}`),
 };
