@@ -1,9 +1,8 @@
 import axios from 'axios';
-
 const token = localStorage.getItem('token');
-console.log('token', token);
 
-const BASE_URL = 'http://localhost:3001';
+const BASE_URL = process.env.REACT_APP_API_URL;
+
 const service = axios.create({
   baseURL: BASE_URL,
   headers: {
