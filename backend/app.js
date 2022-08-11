@@ -87,7 +87,6 @@ app.delete("/transactions/:id", (req, res) => {
 
   const deletedTransaction = db.get("transactions").removeById(id).write();
 
-  console.log("deledtedTransaction", deletedTransaction);
   if (deletedTransaction) {
     res.status(200).json();
   } else {
@@ -95,4 +94,6 @@ app.delete("/transactions/:id", (req, res) => {
   }
 });
 
-app.listen(3001, () => console.log("Server listening on port 3001"));
+app.listen(process.env.PORT || 3001, () =>
+  console.log("Server listening on port 3001")
+);
